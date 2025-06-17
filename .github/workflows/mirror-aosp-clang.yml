@@ -13,6 +13,9 @@ on:
         default: r522817
         type: string
 
+permissions:
+  contents: write
+
 jobs:
   build:
     name: Mirror AOSP Clang
@@ -33,11 +36,11 @@ jobs:
             exit 1
           fi
 
-      - name: Upload to GitHub Release
-        uses: softprops/action-gh-release@v2
+      - name: Upload to GitHub Releases
+        uses: softprops/action-gh-release@v2.3.2
         with:
           tag_name: clang-${{ env.version }}-aosp
-          name: Clang ${{ env.version }}
+          name: AOSP Clang ${{ env.version }}
           files: ${{ github.workspace }}/clang/clang.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
