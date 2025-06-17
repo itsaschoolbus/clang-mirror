@@ -1,0 +1,43 @@
+name: Mirror Clang
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'AOSP branch name (e.g., main)'
+        required: true
+        default: main
+        type: string
+      version:
+        description: 'Clang version (e.g., r522817)'
+        required: true
+        default: r522817
+        type: string
+
+jobs:
+  build:
+    name: Mirror AOSP Clang
+    runs-on: ubuntu-latest
+    env:
+      branch: ${{ github.event.inputs.branch }}
+      version: ${{ github.event.inputs.version }}
+    steps:
+      - name: Prepare workspace
+        run: mkdir -p ${{ github.workspace }}/clang
+
+      - name: Download Clang archive
+        run: |
+          cd ${{ github.workspace }}/clang
+          wget https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/${{ env.branch }}/clang-${{ env.version }}.tar.gz -O clang.tar.gz
+          if [ ! -s clang.tar.gz ]; then
+            echo "Download failed or empty file"
+            exit 1
+          fi
+
+      - name: Upload to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: clang-${{ env.version }}-aosp
+          name: Clang ${{ env.version }}
+          files: ${{ github.workspace }}/clang/clang.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
