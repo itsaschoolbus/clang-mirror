@@ -21,7 +21,7 @@ jobs:
     name: Mirror AOSP Clang
     runs-on: ubuntu-latest
     env:
-      branch: ${{ github.event.inputs.branch }}
+      refs: ${{ github.event.inputs.refs }}
       version: ${{ github.event.inputs.version }}
     steps:
       - name: Prepare workspace
