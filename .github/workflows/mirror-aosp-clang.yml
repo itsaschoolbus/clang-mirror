@@ -2,10 +2,10 @@ name: Mirror Clang
 on:
   workflow_dispatch:
     inputs:
-      branch:
-        description: 'AOSP branch name (e.g., main)'
+      refs:
+        description: 'Git refs (e.g., refs/head/main)'
         required: true
-        default: main
+        default: refs/head/main
         type: string
       version:
         description: 'Clang version (e.g., r522817)'
@@ -30,7 +30,7 @@ jobs:
       - name: Download Clang archive
         run: |
           cd ${{ github.workspace }}/clang
-          wget https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/${{ env.branch }}/clang-${{ env.version }}.tar.gz -O clang.tar.gz
+          wget https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/${{ env.refs }}/clang-${{ env.version }}.tar.gz -O clang.tar.gz
           if [ ! -s clang.tar.gz ]; then
             echo "Download failed or empty file"
             exit 1
